@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-conf
+data:
+  nginx.conf: |
+    worker_processes auto;
+
+    events {
+        worker_connections 1024;
+    }
+
+    http {
+        include       /etc/nginx/mime.types;
+        default_type  application/octet-stream;
+        sendfile      on;
+
+        upstream backend {
+            server backend:5000;
+        }
+
+        upstream transactions {
+            server transactions:3000;
+        }
+
+        upstream studentportfolio {
+            server studentportfolio:80;
+        }
+
+        server {
+            listen 80;
+
+            # ---- TRANSACTIONS SERVICE ----
+            location ^~ /api/transactions {
+                proxy_pass http://transactions;
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            }
+
+            # ---- FLASK BACKEND ----
+            location ^~ /api/ {
+                proxy_pass http://backend;
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            }
+
+            # ---- FRONTEND ----
+            location / {
+                proxy_pass http://studentportfolio;
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            }
+        }
+    }
