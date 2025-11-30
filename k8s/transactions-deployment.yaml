@@ -17,7 +17,7 @@ spec:
         - name: ghcr-creds
       containers:
         - name: transactions
-          image: ghcr.io/aakash6060/transactions:latest
+          image: ghcr.io/aakash6060/transactions:6eddb2bdae74f9f7432431cbc65fa4c8b193e2cc
           ports:
             - containerPort: 3000
               name: http

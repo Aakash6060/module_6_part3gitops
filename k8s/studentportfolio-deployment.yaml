@@ -17,7 +17,7 @@ spec:
         - name: ghcr-creds
       containers:
         - name: studentportfolio
-          image: ghcr.io/aakash6060/studentportfolio:latest
+          image: ghcr.io/aakash6060/studentportfolio:6eddb2bdae74f9f7432431cbc65fa4c8b193e2cc
           ports:
             - containerPort: 80
               name: http
